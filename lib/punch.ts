@@ -44,11 +44,14 @@ async function punch(type: PunchType, companyLocation: GeoLocation, credentials:
     
     await page.goto('https://cloud.nueip.com/home', { waitUntil: 'networkidle0' })
 
-    // const clockInButtonSelector = selectorForPunchType(type)
-    // await page.waitForSelector(clockInButtonSelector)
-    // page.click(clockInButtonSelector)
-    
-    // page.waitForResponse('https://cloud.nueip.com/time_clock/ajax')
+    const clockInButtonSelector = selectorForPunchType(type)
+    await page.waitForSelector(clockInButtonSelector)
+
+    page.on('response', (e: any) => {
+        console.log(e)
+    })
+
+    page.click(clockInButtonSelector)
     
     // await browser.close()
 }
