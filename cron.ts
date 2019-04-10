@@ -54,15 +54,18 @@ timeout(waitingTime)
     })
     .then(console.log)
     .catch(async (error) => {
-        let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
-        let title = `[失敗] ${dateTime} 打卡結果`
+        try {
+            let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
+            let title = `[失敗] ${dateTime} 打卡結果`
 
-        let message = [
-            logs.map(l => `<p>${l}</p>`).join('\n'),
-            `<pre>${error}<pre>`
-        ].join('\n')
+            let message = [
+                logs.map(l => `<p>${l}</p>`).join('\n'),
+                `<pre>${error}<pre>`
+            ].join('\n')
 
-        return sendEmail(title, message)
+            return await sendEmail(title, message)
+        } catch (e) {
+            console.error('Send failure message error: ', e)
+        }
     })
-    .catch(console.error)
     .finally(() => console.log('Finish'))
