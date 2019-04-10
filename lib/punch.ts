@@ -1,6 +1,7 @@
 import GeoLocation from './geo_location'
 import Credentials from './credentials'
 import PunchType from './punch_type'
+import timeout from './timeout';
 
 const pp = require('puppeteer')
 
@@ -21,7 +22,7 @@ async function waitForTextInputAndFill(selector: string, value: string, page: an
 }
 
 async function punch(type: PunchType, companyLocation: GeoLocation, credentials: Credentials) {
-    const browser = await pp.launch({ headless: false })
+    const browser = await pp.launch()
 
     const context = browser.defaultBrowserContext()
     await context.overridePermissions('https://cloud.nueip.com/', ['geolocation'])
@@ -44,16 +45,18 @@ async function punch(type: PunchType, companyLocation: GeoLocation, credentials:
     
     await page.goto('https://cloud.nueip.com/home', { waitUntil: 'networkidle0' })
 
-    const clockInButtonSelector = selectorForPunchType(type)
-    await page.waitForSelector(clockInButtonSelector)
+    const actionButtonSelector = selectorForPunchType(type)
+    await page.waitForSelector(actionButtonSelector)
 
-    page.on('response', (e: any) => {
-        console.log(e)
-    })
-
-    page.click(clockInButtonSelector)
+    await page.click(actionButtonSelector)
     
-    // await browser.close()
+    await timeout(3000)    
+
+    const imageData = await page.screenshot({ encoding: 'base64' })
+    
+    await browser.close()
+
+    return imageData
 }
 
 export default punch
