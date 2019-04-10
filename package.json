@@ -11,6 +11,9 @@
   "dependencies": {
     "@types/node": "^11.12.1",
     "dotenv": "^7.0.0",
-    "puppeteer": "^1.14.0"
+    "moment": "^2.24.0",
+    "puppeteer": "^1.14.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
   }
 }

@@ -1,6 +1,10 @@
+const moment = require('moment')
+
 import punch from './lib/punch';
 import PunchType from './lib/punch_type';
 import timeout from './lib/timeout';
+import sendEmail from './lib/zapier_hook';
+
 
 const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '.env') })
@@ -19,15 +23,46 @@ const credentials = {
 const now = new Date()
 const punchType = now.getHours() < 12 ? PunchType.IN : PunchType.OUT
 
-console.log(`Current time: ${now}`)
-console.log(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
+let logs: string[] = []
 
-const MAX_WAITING_TIME = 120 * 1000
+const pushLog = (message: string) => {
+    logs.push(message)
+    console.log(message)    
+}
+
+pushLog(`Current time: ${now}`)
+pushLog(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
+
+const MAX_WAITING_TIME = 10 * 1000
 
 const waitingTime = Math.random() * MAX_WAITING_TIME
 
-console.log(`Wait for ${waitingTime} ms`)
+pushLog(`Wait for ${waitingTime} ms`)
 
 timeout(waitingTime)
     .then(() => punch(punchType, coordinates, credentials))
+    .then((imageData) => {
+        let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
+        let title = `${dateTime} 打卡結果`
+
+        let message = [
+            logs.map(l => `<p>${l}</p>`).join('\n'),
+            `<img style="width: 100%" src="data:image/png;base64, ${imageData}" />`
+        ].join('\n')
+
+        return sendEmail(title, message)
+    })
     .then(console.log)
+    .catch(async (error) => {
+        let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
+        let title = `[失敗] ${dateTime} 打卡結果`
+
+        let message = [
+            logs.map(l => `<p>${l}</p>`).join('\n'),
+            `<pre>${error}<pre>`
+        ].join('\n')
+
+        return sendEmail(title, message)
+    })
+    .catch(console.error)
+    .finally(() => console.log('Finish'))
