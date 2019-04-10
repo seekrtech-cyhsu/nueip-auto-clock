@@ -48,7 +48,7 @@ async function punch(type: PunchType, companyLocation: GeoLocation, credentials:
     const actionButtonSelector = selectorForPunchType(type)
     await page.waitForSelector(actionButtonSelector)
 
-    // await page.click(actionButtonSelector)
+    await page.click(actionButtonSelector)
     
     await timeout(3000)    
 

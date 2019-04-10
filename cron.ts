@@ -33,7 +33,7 @@ const pushLog = (message: string) => {
 pushLog(`Current time: ${now}`)
 pushLog(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
 
-const MAX_WAITING_TIME = 10 * 1000
+const MAX_WAITING_TIME = 133 * 1000
 
 const waitingTime = Math.random() * MAX_WAITING_TIME
 
