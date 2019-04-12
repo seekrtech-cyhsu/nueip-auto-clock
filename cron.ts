@@ -1,10 +1,10 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 import punch from './lib/punch';
 import PunchType from './lib/punch_type';
 import timeout from './lib/timeout';
 import sendEmail from './lib/zapier_hook';
-
+import isWorkDay from './lib/calendar';
 
 const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '.env') })
@@ -30,19 +30,26 @@ const pushLog = (message: string) => {
     console.log(message)    
 }
 
-pushLog(`Current time: ${now}`)
-pushLog(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
+async function performClockAction() {
+    try {
+        const isTodayWorkDay = await isWorkDay()
+        if (!isTodayWorkDay) {
+            return 'Not a workday. Exit.'
+        }
 
-const MAX_WAITING_TIME = 133 * 1000
+        pushLog(`Current time: ${now}`)
+        pushLog(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
 
-const waitingTime = Math.random() * MAX_WAITING_TIME
+        const MAX_WAITING_TIME = 133 * 1000
 
-pushLog(`Wait for ${waitingTime} ms`)
+        const waitingTime = Math.random() * MAX_WAITING_TIME
 
-timeout(waitingTime)
-    .then(() => punch(punchType, coordinates, credentials))
-    .then((imageData) => {
-        let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
+        pushLog(`Wait for ${waitingTime} ms`)
+        await timeout(waitingTime)
+        
+        let imageData = await punch(punchType, coordinates, credentials)
+    
+        let dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
         let title = `${dateTime} 打卡結果`
 
         let message = [
@@ -50,12 +57,10 @@ timeout(waitingTime)
             `<img style="width: 100%" src="data:image/png;base64, ${imageData}" />`
         ].join('\n')
 
-        return sendEmail(title, message)
-    })
-    .then(console.log)
-    .catch(async (error) => {
+        return await sendEmail(title, message)
+    } catch (error) {
         try {
-            let dateTime = moment(now).format('YYYY-MM-DD HH:mm:ss')
+            let dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
             let title = `[失敗] ${dateTime} 打卡結果`
 
             let message = [
@@ -67,5 +72,10 @@ timeout(waitingTime)
         } catch (e) {
             console.error('Send failure message error: ', e)
         }
-    })
-    .finally(() => console.log('Finish'))
+    }
+}
+
+performClockAction()
+    .then(console.log)
+    .catch(console.error)
+    .finally(() => console.log('Finish.'))
