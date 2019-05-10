@@ -1,6 +1,6 @@
 type Credentials = {
-    companyName: string, 
-    username: string, 
+    companyName: string,
+    username: string,
     password: string
 }
 

@@ -26,11 +26,11 @@ async function punch(type: PunchType, companyLocation: GeoLocation, credentials:
 
     const context = browser.defaultBrowserContext()
     await context.overridePermissions('https://cloud.nueip.com/', ['geolocation'])
-    
+
     const page = await browser.newPage()
     await page.setGeolocation(companyLocation)
     await page.goto('https://cloud.nueip.com/login/')
-    
+
     await waitForTextInputAndFill('#dept_input:not([disabled])', credentials.companyName, page)
     await waitForTextInputAndFill('#username_input:not([disabled])', credentials.username, page)
     await waitForTextInputAndFill('#password-input:not([disabled])', credentials.password, page)
@@ -42,18 +42,18 @@ async function punch(type: PunchType, companyLocation: GeoLocation, credentials:
         page.waitForNavigation(),
         page.click(loginButtonSelector)
     ])
-    
+
     await page.goto('https://cloud.nueip.com/home', { waitUntil: 'networkidle0' })
 
     const actionButtonSelector = selectorForPunchType(type)
     await page.waitForSelector(actionButtonSelector)
 
     await page.click(actionButtonSelector)
-    
-    await timeout(3000)    
+
+    await timeout(3000)
 
     const imageData = await page.screenshot({ encoding: 'base64' })
-    
+
     await browser.close()
 
     return imageData
