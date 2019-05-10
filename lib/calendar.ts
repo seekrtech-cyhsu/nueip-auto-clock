@@ -20,11 +20,11 @@ async function _isWorkDay() {
         maxResults: 1
     }
 
-    let result = await cal.events.list(options)
-    let items = result.data.items
+    const result = await cal.events.list(options)
+    const items = result.data.items
     if (items) {
         const eventName = process.env.GOOGLE_CALENDAR_EVENT_NAME
-        let count = items!.filter(event => event.summary === eventName).length
+        const count = items!.filter(event => event.summary === eventName).length
         return count > 0
     }
 

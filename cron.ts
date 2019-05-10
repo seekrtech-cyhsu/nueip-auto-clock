@@ -47,12 +47,12 @@ async function performClockAction() {
         pushLog(`Wait for ${waitingTime} ms`)
         await timeout(waitingTime)
 
-        let imageData = await punch(punchType, coordinates, credentials)
+        const imageData = await punch(punchType, coordinates, credentials)
 
-        let dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
-        let title = `${dateTime} 打卡結果`
+        const dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+        const title = `${dateTime} 打卡結果`
 
-        let message = [
+        const message = [
             logs.map(l => `<p>${l}</p>`).join('\n'),
             `<img style="width: 100%" src="data:image/png;base64, ${imageData}" />`
         ].join('\n')
@@ -60,10 +60,10 @@ async function performClockAction() {
         return await sendEmail(title, message)
     } catch (error) {
         try {
-            let dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
-            let title = `[失敗] ${dateTime} 打卡結果`
+            const dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+            const title = `[失敗] ${dateTime} 打卡結果`
 
-            let message = [
+            const message = [
                 logs.map(l => `<p>${l}</p>`).join('\n'),
                 `<pre>${error}<pre>`
             ].join('\n')
