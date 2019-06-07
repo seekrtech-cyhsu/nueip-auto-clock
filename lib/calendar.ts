@@ -17,6 +17,7 @@ async function _isWorkDay() {
         calendarId: calendar,
         timeMin: startOfToday.tz('UTC').format(),
         timeMax: startOfTomorrow.tz('UTC').format(),
+        singleEvents: true,
         maxResults: 1
     }
 
