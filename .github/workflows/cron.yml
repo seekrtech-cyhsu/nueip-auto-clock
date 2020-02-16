@@ -1,0 +1,31 @@
+name: Cron
+
+on:
+  schedule:
+    # 00:50 UTC => 08:50 GMT+8
+    - cron: '50 0 * * 1-5'
+    # 10:00 UTC => 18:00 GMT+8
+    - cron: '0 0 * * 1-5'
+
+jobs:
+  clock:
+    runs-on: ubuntu-latest
+    env:
+      LATITUDE: 24.1521315
+      LONGITUDE: 120.6668197
+      COMPANY_NAME: ${{ secrets.company_name }}
+      USERNAME: ${{ secrets.username }}
+      PASSWORD: ${{ secrets.password }}
+      GOOGLE_CALENDAR_ID: ${{ secrets.google_calendar_id }}
+      GOOGLE_CALENDAR_EVENT_NAME: ${{ secrets.google_calendar_event_name }}
+      GOOGLE_API_KEY: ${{ secrets.google_api_key }}
+      ZAPIER_HOOK_URL: ${{ secrets.zapier_hook_url }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install
+      - run: npm run build
+      - run: node cron.js
+
