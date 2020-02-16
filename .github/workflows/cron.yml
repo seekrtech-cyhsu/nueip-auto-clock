@@ -10,7 +10,7 @@ on:
     - cron: '0 0 * * 1-5'
 
 jobs:
-  build:
+  clock:
     runs-on: ubuntu-latest
     env:
       LATITUDE: 24.1521315
