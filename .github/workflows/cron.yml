@@ -1,6 +1,8 @@
 name: Cron
 
 on:
+  push:
+    branch: master
   schedule:
     # 00:50 UTC => 08:50 GMT+8
     - cron: '50 0 * * 1-5'
