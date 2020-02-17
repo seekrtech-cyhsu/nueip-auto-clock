@@ -20,8 +20,11 @@ const credentials = {
     password: process.env.PASSWORD!
 }
 
-const now = new Date()
-const punchType = now.getHours() < 12 ? PunchType.IN : PunchType.OUT
+const timezone = 'Asia/Taipei'
+const dateFormat = 'YYYY-MM-DD HH:mm:ss'
+
+const now = moment().tz(timezone)
+const punchType = now.hour() < 12 ? PunchType.IN : PunchType.OUT
 
 let logs: string[] = []
 
@@ -49,7 +52,7 @@ async function performClockAction() {
 
         const imageData = await punch(punchType, coordinates, credentials)
 
-        const dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+        const dateTime = moment().tz(timezone).format(dateFormat)
         const title = `${dateTime} 打卡結果`
 
         const message = [
@@ -60,7 +63,7 @@ async function performClockAction() {
         return await sendEmail(title, message)
     } catch (error) {
         try {
-            const dateTime = moment().format('YYYY-MM-DD HH:mm:ss')
+            const dateTime = moment().tz(timezone).format(dateFormat)
             const title = `[失敗] ${dateTime} 打卡結果`
 
             const message = [
