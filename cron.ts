@@ -40,7 +40,7 @@ async function performClockAction() {
             return 'Not a workday. Exit.'
         }
 
-        pushLog(`Current time: ${now}`)
+        pushLog(`Current time: ${now.format(dateFormat)}`)
         pushLog(`Perform ${ punchType == PunchType.IN ? 'clock in' : 'clock out'}`)
 
         const MAX_WAITING_TIME = 133 * 1000
