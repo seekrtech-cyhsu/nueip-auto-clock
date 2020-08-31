@@ -11,8 +11,8 @@ jobs:
   clock:
     runs-on: ubuntu-latest
     env:
-      LATITUDE: 24.1521315
-      LONGITUDE: 120.6668197
+      LATITUDE: 24.152139
+      LONGITUDE: 120.669000
       COMPANY_NAME: ${{ secrets.company_name }}
       USERNAME: ${{ secrets.username }}
       PASSWORD: ${{ secrets.password }}
