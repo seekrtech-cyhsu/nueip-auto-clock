@@ -11,7 +11,7 @@
     "dotenv": "^7.0.0",
     "googleapis": "^39.2.0",
     "moment-timezone": "^0.5.23",
-    "puppeteer": "^1.14.0",
+    "puppeteer": "^5",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "typescript": "^3.4.5"
