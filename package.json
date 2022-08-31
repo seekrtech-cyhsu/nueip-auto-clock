@@ -10,7 +10,7 @@
     "@types/request-promise": "^4.1.43",
     "dotenv": "^7.0.0",
     "googleapis": "^63.0.0",
-    "moment-timezone": "^0.5.23",
+    "moment-timezone": "^0.5.35",
     "puppeteer": "^5",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
